@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Сторінка Адміністратора</title>
+    <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700&amp;subset=cyrillic-ext"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="header text-center">
+
+        <a href="index.html" class="home-link"> <=== </a>
+        <img src="img/logo/logo.svg" width="92" alt="Суши и пицца">
+        <div class="display-4">Нова позиція</div>
+    </header>
+    <div class="container text-center">
+        <div class="row justify-content-md-center">
+            <div class="col-md-4 ">
+                
+                <form action="#" onsubmit="handleAddProduct(event)">
+                    <p class="lead">Назва товару</p>
+                    <input type="text" name="name" class="product-name form-control">
+        
+                    <p class="lead">Введіть ціну товару</p>
+                    <input type="text" name="price" class="product-price form-control">
+        
+                    <p class="lead">Введіть кількість товару</p>
+                    <input type="text" name="count" class="product-count form-control">
+
+                    <p class="lead">Введіть вагу продукції</p>
+                    <input type="text" name="weight" class="product-count form-control">
+        
+                    <p class="lead">Завантажте фото товару</p>
+                    <input type="file" id="file" name="file" class="product-photo form-control-file" multiple>
+                    <img id="file" src="">
+        
+                    <div class="product-add">
+                        <p class="lead"></p>
+                        <button data-cart class="btn btn-block btn-add-warning btn-add">Добавити товар</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/addProduct.js"></script>
+
+</body>
+
+</html>
