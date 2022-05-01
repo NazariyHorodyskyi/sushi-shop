@@ -66,6 +66,14 @@ const handleAddBasket = (event, id) => {
     if (event.target.hasAttribute('data-cart')) {
         goods.forEach(product => {
             if (product.id === id) {
+                /////////////////////////
+                basket.forEach(el => {
+                    if(el.id === product.id) {
+                        el.counter = product.counter + el.counter;
+                        
+                    }
+                }) 
+                ////////////////////////
                 basket.push({
                     id: product.id,
                     file: product.file,
@@ -74,13 +82,15 @@ const handleAddBasket = (event, id) => {
                     weight: product.weight,
                     price: product.price,
                     counter: product.counter
-                })
+                });
+                product.counter = 1; 
             }
         });
     }
     calculateAmountOrder(basket);
     updateLocalBasket();
     createTemplateBasket(basket);
+    createTemplate(goods);
 }
 
 const calculateAmountOrder = (arr) => {
