@@ -4,28 +4,6 @@ const addProductBasket = document.querySelector('.cart-wrapper');
 const goods = JSON.parse(localStorage.getItem('product')) || [];
 const basket = JSON.parse(localStorage.getItem('goods')) || [];
 
-const handleAddCounter = (event, arr, id) => {
-    arr.forEach(el => {
-    
-        if (el.id === id) {
-        
-            if (event.target.dataset.action === 'minus') {
-                if (el.counter <= 1) { return };
-                el.counter--;
-            }
-
-            if (event.target.dataset.action === 'plus') {
-                el.counter++;
-            }
-        }
-    });
-    updateLocalBasket();
-    createTemplate(goods);
-    createTemplateBasket(basket);
-}
-
-
-
 const createTemplateBasket = (product) => {
     addProductBasket.innerHTML = '';
     if (product.length > 0) {
@@ -51,7 +29,7 @@ const createTemplateBasket = (product) => {
 							<div class="price">
 								<div class="price__currency">${element.price} грн.</div>
 								</div>
-                                <div> <button data-delete class="btn btn-block btn-outline-warning" onclick="deleteProductWithBasket(event, ${element.id})"> Delete </button> </div>
+                                <div> <button data-delete class="btn btn-block btn-outline-warning" onclick="deleteProductWithBasket(${element.id})"> Delete </button> </div>
 								</div>
 									</div>
 								</div>
@@ -62,67 +40,12 @@ const createTemplateBasket = (product) => {
     }
 }
 
-const handleAddBasket = (event, id) => {
-    if (event.target.hasAttribute('data-cart')) {
-        goods.forEach(product => {
-            if (product.id === id) {
-                /////////////////////////
-                basket.forEach(el => {
-                    if(el.id === product.id) {
-                        el.counter = product.counter + el.counter;
-                        
-                    }
-                }) 
-                ////////////////////////
-                basket.push({
-                    id: product.id,
-                    file: product.file,
-                    name: product.name,
-                    count: product.count,
-                    weight: product.weight,
-                    price: product.price,
-                    counter: product.counter
-                });
-                product.counter = 1; 
-            }
-        });
-    }
-    calculateAmountOrder(basket);
-    updateLocalBasket();
-    createTemplateBasket(basket);
-    createTemplate(goods);
-}
-
-const calculateAmountOrder = (arr) => {
-    const totalPrice = document.querySelector('.total-price');
-    var result = arr.reduce(function (sum, current) {
-        return sum + Number(current.price);
-    }, 0);
-
-    totalPrice.innerHTML = result;
-}
-
-calculateAmountOrder(basket);
-
-const deleteProductWithBasket = (event, id) => {
-    if (event.target.hasAttribute('data-delete')) {
-        basket.forEach((el, index) => {
-            if (el.id === id) {
-                basket.splice(index, 1);
-            }
-        })
-    }
-    calculateAmountOrder(basket);
-    updateLocalBasket();
-    createTemplateBasket(basket);
-}
-
 const createTemplate = (product) => {
     addProductContent.innerHTML = '';
     if (product.length > 0) {
         product.forEach(element => {
             addProductContent.innerHTML += `
-            <div class="col-md-6" onclick='handleAddBasket(event, ${element.id})'>
+            <div class="col-md-6">
             <div class="card mb-4" data-id=${element.id}>
                 <img class="product-img" src="${element.file}" alt="">
                 <div class="card-body text-center">
@@ -143,7 +66,7 @@ const createTemplate = (product) => {
                     </div>
                     </div>
 
-                    <button data-cart type="button" class="btn btn-block btn-outline-warning" >+ в кошик</button>
+                    <button data-cart type="button" class="btn btn-block btn-outline-warning" onclick='handleAddBasket(${element.id})'>+ в кошик</button>
 
                     </div>
         </div>
@@ -152,10 +75,91 @@ const createTemplate = (product) => {
     }
 
 }
+// function counter goods
+const handleAddCounter = (event, arr, id) => {
+    arr.forEach(el => {
+    
+        if (el.id === id) {
+        
+            if (event.target.dataset.action === 'minus') {
+                if (el.counter <= 1) { return };
+                el.counter--;
+            }
+
+            if (event.target.dataset.action === 'plus') {
+                el.counter++;
+            }
+        }
+    });
+    updateLocalBasket();
+    createTemplate(goods);
+    createTemplateBasket(filterBasket(basket));
+}
+// end counter
+
+// calculate total sum in basket
+const calculateAmountOrder = (arr) => {
+    const totalPrice = document.querySelector('.total-price');
+    var result = arr.reduce(function (sum, current) {
+        return sum + Number(current.price);
+    }, 0);
+
+    totalPrice.innerHTML = result;
+}
+// end calculate total sum in basket
+
+calculateAmountOrder(filterBasket(basket));
+
+//deleted goods with basket
+const deleteProductWithBasket = (id) => {
+        basket.forEach((el, index) => {
+            if (el.id === id) {
+                basket.splice(index, 1);
+            }
+        })
+
+    calculateAmountOrder(filterBasket(basket));
+    updateLocalBasket();
+    createTemplateBasket(filterBasket(basket));
+}
+//end delete function with basket
+
+// function add goods to basket
+const handleAddBasket = (id) => {
+        goods.forEach(product => {
+            if (product.id === id) {           
+                basket.push({
+                    id: product.id,
+                    file: product.file,
+                    name: product.name,
+                    count: product.count,
+                    weight: product.weight,
+                    price: product.price,
+                    counter: product.counter
+                });
+                product.counter = 1; 
+              
+            }
+                         
+        });        
+    
+    calculateAmountOrder(filterBasket(basket));
+    updateLocalBasket();
+    createTemplateBasket(filterBasket(basket));
+    createTemplate(goods);
+}
+// end add goods to basket
+
+function filterBasket(arr) {
+    const table = {};
+    return arr.filter(({id}) =>(!table[id] && (table[id] = 1)));
+}
+
+
 
 const updateLocalBasket = () => {
-    localStorage.setItem('goods', JSON.stringify(basket));
+    localStorage.setItem('goods', JSON.stringify(filterBasket(basket)));
 };
 
 createTemplate(goods);
-createTemplateBasket(basket);
+createTemplateBasket(filterBasket(basket));
